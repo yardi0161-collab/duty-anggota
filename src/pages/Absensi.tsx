@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FileText, Mail } from 'lucide-react';
 import type { Personnel } from '../types';
-import { swapStyle, useSwap } from '../lib';
 import PageHeader from '../components/PageHeader';
 import DutyForm from '../components/DutyForm';
 import LeaveForm from '../components/LeaveForm';
@@ -15,10 +14,15 @@ interface Props {
   onSubmitted: (msg: string) => void;
 }
 
+// Panel ditumpuk dalam satu sel grid agar tinggi kotak selalu stabil.
+// Panel yang tidak aktif memudar dan bergeser ke sisinya; yang aktif masuk dari samping (semua di dalam overflow-hidden).
+const PANEL = 'col-start-1 row-start-1 h-full';
+const ACTIVE = 'visible opacity-100 translate-x-0 delay-100 duration-200 transition-[opacity,transform] ease-out';
+const hidden = (side: 'left' | 'right') =>
+  `invisible opacity-0 pointer-events-none ${side === 'left' ? '-translate-x-6' : 'translate-x-6'} transition-[opacity,transform,visibility] duration-150 ease-in`;
+
 export default function Absensi({ personnel, rank, onBack, onSubmitted }: Props) {
   const [tab, setTab] = useState<Tab>('duty');
-  const { shown, phase } = useSwap<Tab>(tab, 150);
-  const dir = tab === 'izin' ? 1 : -1;
   const tabBtn =
     'relative z-10 flex items-center justify-center gap-2 rounded-xl py-2 font-display text-base focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold';
 
@@ -55,11 +59,11 @@ export default function Absensi({ personnel, rank, onBack, onSubmitted }: Props)
           </button>
         </div>
 
-        <div style={swapStyle(phase, dir, 150, 14)}>
-          <div className={shown === 'duty' ? '' : 'hidden'}>
+        <div className="-mx-1 -my-1 grid overflow-hidden px-1 py-1">
+          <div role="tabpanel" aria-hidden={tab !== 'duty'} className={`${PANEL} ${tab === 'duty' ? ACTIVE : hidden('left')}`}>
             <DutyForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Laporan duty terkirim')} />
           </div>
-          <div className={shown === 'izin' ? '' : 'hidden'}>
+          <div role="tabpanel" aria-hidden={tab !== 'izin'} className={`${PANEL} ${tab === 'izin' ? ACTIVE : hidden('right')}`}>
             <LeaveForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Pengajuan izin terkirim')} />
           </div>
         </div>
