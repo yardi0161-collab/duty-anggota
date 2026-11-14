@@ -102,7 +102,7 @@ export default function App() {
     <div className="min-h-screen md:flex">
       <Sidebar page={page} onChange={setPage} />
       <div className="min-w-0 flex-1 overflow-x-clip pb-24 md:pb-0">
-        <Header name={personnel.name} rank={rank} />
+        <Header name={personnel.name} rank={rank} onProfile={() => setPage('profile')} />
         <main className="mx-auto max-w-6xl p-4 md:p-6">
           <PageTransition page={page} render={renderPage} />
         </main>
