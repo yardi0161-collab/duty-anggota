@@ -1,14 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { Attendance, Note, NoteInput, Page, Personnel, Report, ReportInput, Status } from './types';
+import type { Attendance, Note, NoteInput, Page, Personnel, Report, ReportInput } from './types';
 import {
   REPORT_POINTS,
-  STATUS_POINTS,
   rankInfo,
   seedAttendance,
   seedNotes,
   seedPersonnel,
   seedReports,
-  timeNow,
   todayISO,
   uid,
   useLocalStorage,
@@ -20,6 +18,8 @@ import Home from './pages/Home';
 import Log from './pages/Log';
 import Book from './pages/Book';
 import Profile from './pages/Profile';
+import Absensi from './pages/Absensi';
+import Placeholder from './pages/Placeholder';
 
 const byDateDesc = <T extends { date: string }>(list: T[]): T[] => [...list].sort((a, b) => b.date.localeCompare(a.date));
 
@@ -46,13 +46,6 @@ export default function App() {
     setToast({ id, msg });
     setTimeout(() => setToast((t) => (t && t.id === id ? null : t)), 2800);
   }, []);
-
-  const markAttendance = (status: Status) => {
-    const date = todayISO();
-    const entry: Attendance = { id: uid(), date, time: timeNow(), status, points: STATUS_POINTS[status] };
-    setAttendance((prev) => [entry, ...prev.filter((a) => a.date !== date)]);
-    notify(`Absensi ${status} tersimpan`);
-  };
 
   const addReport = (data: ReportInput) => {
     setReports((prev) => [{ id: uid(), ...data, points: REPORT_POINTS }, ...prev]);
@@ -94,8 +87,12 @@ export default function App() {
         <Header name={personnel.name} rank={rank} />
         <main className="mx-auto max-w-6xl p-4 md:p-6">
           {page === 'home' && (
-            <Home personnel={personnel} rank={rank} points={points} attendance={attendance} reports={reports} onMark={markAttendance} onReport={addReport} />
+            <Home personnel={personnel} rank={rank} points={points} attendance={attendance} reports={reports} onOpenAbsensi={() => setPage('absensi')} onReport={addReport} />
           )}
+          {page === 'absensi' && (
+            <Absensi personnel={personnel} rank={rank} onBack={() => setPage('home')} onSubmitted={notify} />
+          )}
+          {(page === 'duty' || page === 'bar') && <Placeholder />}
           {page === 'log' && <Log attendance={attendance} reports={reports} />}
           {page === 'book' && <Book notes={notes} reports={reports} onSave={saveNote} onDelete={deleteNote} />}
           {page === 'profile' && (
