@@ -9,9 +9,9 @@ export default function AccountField({ label, value }: Props) {
   return (
     <label className="block text-sm font-extrabold">
       <span className="flex items-center gap-1">
-        {label} <Lock size={12} className="text-bark" />
+        {label} <Lock size={12} className="text-muted" />
       </span>
-      <input readOnly value={value} className="field mt-1 cursor-not-allowed bg-sand font-normal" />
+      <input readOnly value={value} className="field mt-1 cursor-not-allowed bg-night font-normal text-muted" />
     </label>
   );
 }

@@ -58,7 +58,7 @@ export default function DutyForm({ personnel, rank, onSubmitted }: Props) {
         <AccountField label="Divisi" value={personnel.division} />
         <AccountField label="Pangkat" value={rank} />
       </div>
-      <p className="text-xs font-semibold text-bark">Nama, divisi, dan pangkat akan terisi otomatis dari akun nanti.</p>
+      <p className="text-xs font-semibold text-muted">Nama, divisi, dan pangkat akan terisi otomatis dari akun nanti.</p>
       <div className="grid gap-3 sm:grid-cols-3">
         <label className="block text-sm font-extrabold">
           Tanggal
@@ -84,12 +84,12 @@ export default function DutyForm({ personnel, rank, onSubmitted }: Props) {
       </label>
       <div>
         <p className="text-sm font-extrabold">Upload Foto</p>
-        <label className="btn mt-1 cursor-pointer bg-sand">
+        <label className="btn mt-1 cursor-pointer bg-panel2">
           <ImagePlus size={18} /> {photo ? 'GANTI FOTO' : 'PILIH FOTO'}
           <input type="file" accept="image/*" className="sr-only" onChange={pickPhoto} />
         </label>
         {photo && <span className="ml-2 text-sm font-semibold">{photo.name}</span>}
-        {preview && <img src={preview} alt="Pratinjau foto bukti duty" className="mt-2 max-h-56 rounded-xl border-[3px] border-ink object-cover" />}
+        {preview && <img src={preview} alt="Pratinjau foto bukti duty" className="mt-2 max-h-56 rounded-xl border border-line object-cover" />}
       </div>
       {error && <p className="text-sm font-bold text-rust">{error}</p>}
       <button type="submit" className="btn w-full bg-army text-cream">

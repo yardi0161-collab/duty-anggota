@@ -34,15 +34,15 @@ export default function Calendar({ attendance, reports, selected, onSelect }: Pr
   return (
     <section className="card p-4">
       <div className="flex items-center justify-between">
-        <button className="btn bg-sand px-2 py-1" onClick={() => shift(-1)} aria-label="Bulan sebelumnya">
+        <button className="btn bg-panel2 px-2 py-1" onClick={() => shift(-1)} aria-label="Bulan sebelumnya">
           <ChevronLeft size={20} />
         </button>
         <h2 className="text-xl capitalize">{cursor.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}</h2>
-        <button className="btn bg-sand px-2 py-1" onClick={() => shift(1)} aria-label="Bulan selanjutnya">
+        <button className="btn bg-panel2 px-2 py-1" onClick={() => shift(1)} aria-label="Bulan selanjutnya">
           <ChevronRight size={20} />
         </button>
       </div>
-      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs font-extrabold text-bark">
+      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs font-extrabold text-muted">
         {DAY_LABELS.map((d) => (
           <span key={d}>{d}</span>
         ))}
@@ -59,26 +59,26 @@ export default function Calendar({ attendance, reports, selected, onSelect }: Pr
               key={iso}
               onClick={() => onSelect(iso)}
               aria-pressed={isSel}
-              className={`flex aspect-square flex-col items-center justify-center rounded-lg border-2 text-sm font-bold transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold ${
-                isSel ? 'border-ink bg-army text-cream' : iso === today ? 'border-gold bg-sand' : 'border-transparent hover:bg-sand'
+              className={`flex aspect-square flex-col items-center justify-center rounded-lg border text-sm font-bold transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold ${
+                isSel ? 'border-line bg-army text-cream' : iso === today ? 'border-gold bg-panel2' : 'border-transparent hover:bg-panel2'
               }`}
             >
               {day}
               <span className="flex h-2 gap-0.5">
-                {hasA && <span className="h-2 w-2 rounded-full bg-olive ring-1 ring-ink" />}
-                {hasR && <span className="h-2 w-2 rounded-full bg-gold ring-1 ring-ink" />}
+                {hasA && <span className="h-2 w-2 rounded-full bg-olive ring-1 ring-line" />}
+                {hasR && <span className="h-2 w-2 rounded-full bg-gold ring-1 ring-line" />}
               </span>
             </button>
           );
         })}
       </div>
       <div className="mt-2 flex gap-4 text-xs font-bold">
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-olive ring-1 ring-ink" /> Absensi</span>
-        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-gold ring-1 ring-ink" /> Laporan</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-olive ring-1 ring-line" /> Absensi</span>
+        <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-gold ring-1 ring-line" /> Laporan</span>
       </div>
-      <div className="mt-3 rounded-xl border-[3px] border-ink bg-cream p-3 text-sm">
+      <div className="mt-3 rounded-xl border border-line bg-panel2 p-3 text-sm">
         <p className="font-display text-base">{formatDate(selected)}</p>
-        {!dayAttendance && dayReports.length === 0 && <p className="text-bark">Tidak ada catatan pada tanggal ini.</p>}
+        {!dayAttendance && dayReports.length === 0 && <p className="text-muted">Tidak ada catatan pada tanggal ini.</p>}
         {dayAttendance && (
           <p className="mt-1">
             Absensi: <span className={`rounded-lg px-2 py-0.5 font-display ${STATUS_STYLE[dayAttendance.status]}`}>{dayAttendance.status}</span> pukul {dayAttendance.time}

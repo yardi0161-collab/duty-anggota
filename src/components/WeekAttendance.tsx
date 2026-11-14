@@ -17,12 +17,12 @@ export default function WeekAttendance({ attendance }: { attendance: Attendance[
   return (
     <section className="card p-4">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl border-[3px] border-ink bg-sand text-army">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-panel2 text-leaf">
           <CalendarDays size={20} />
         </span>
         <div>
           <h2 className="text-lg leading-tight">Presensi Minggu Ini</h2>
-          <p className="text-xs font-bold text-bark">{short(days[0])} - {short(days[6])}</p>
+          <p className="text-xs font-bold text-muted">{short(days[0])} - {short(days[6])}</p>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-7 gap-1.5">
@@ -31,7 +31,7 @@ export default function WeekAttendance({ attendance }: { attendance: Attendance[
           const rec = attendance.find((a) => a.date === iso);
           const isToday = iso === today;
           const past = iso < today;
-          let tone = 'bg-cream text-bark';
+          let tone = 'bg-panel2 text-muted';
           let Icon: LucideIcon | null = null;
           if (rec) {
             tone = STATUS_STYLE[rec.status];
@@ -43,7 +43,7 @@ export default function WeekAttendance({ attendance }: { attendance: Attendance[
           return (
             <div
               key={iso}
-              className={`flex flex-col items-center gap-1 rounded-xl border-[3px] border-ink py-2 text-[11px] font-extrabold ${tone} ${isToday ? 'ring-4 ring-gold' : ''}`}
+              className={`flex flex-col items-center gap-1 rounded-xl border border-line py-2 text-[11px] font-extrabold ${tone} ${isToday ? 'ring-2 ring-leaf' : ''}`}
             >
               <span>{LABELS[i]}</span>
               <span className="font-display text-base leading-none">{d.getDate()}</span>

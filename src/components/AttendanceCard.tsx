@@ -22,17 +22,17 @@ export default function AttendanceCard({ onOpen }: Props) {
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-[3px] border-ink bg-olive text-white">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-line bg-olive text-white">
             <ClipboardCheck size={24} />
           </span>
           <div>
             <h2 className="text-xl leading-tight">Absensi</h2>
-            <p className="text-sm font-semibold text-bark">Ketuk untuk isi Laporan Duty atau Izin</p>
+            <p className="text-sm font-semibold text-muted">Ketuk untuk isi Laporan Duty atau Izin</p>
           </div>
         </div>
         <ChevronRight size={26} />
       </div>
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border-[3px] border-ink bg-sand px-3 py-2">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line bg-panel2 px-3 py-2">
         <span className="font-semibold">{dateText}</span>
         <span className="flex items-center gap-1 font-display text-xl">
           <Clock size={18} /> {timeOf(now)}

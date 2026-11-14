@@ -49,11 +49,11 @@ export default function ReportCard({ reports, defaultDivision, onSubmit }: Props
         </button>
       </form>
       <h3 className="mt-4 text-lg">Laporan Terkirim</h3>
-      <ul className="mt-1 divide-y-2 divide-sand">
+      <ul className="mt-1 divide-y-2 divide-line">
         {reports.slice(0, 3).map((r) => (
           <li key={r.id} className="py-1.5 text-sm">
             <p className="font-extrabold">{r.title}</p>
-            <p className="text-bark">{formatDate(r.date)} · {r.division} · +{r.points} poin</p>
+            <p className="text-muted">{formatDate(r.date)} · {r.division} · +{r.points} poin</p>
           </li>
         ))}
       </ul>

@@ -34,7 +34,7 @@ export default function LeaveForm({ personnel, rank, onSubmitted }: Props) {
         <AccountField label="Pangkat" value={rank} />
         <AccountField label="Divisi" value={personnel.division} />
       </div>
-      <p className="text-xs font-semibold text-bark">Data akun akan terisi otomatis nanti.</p>
+      <p className="text-xs font-semibold text-muted">Data akun akan terisi otomatis nanti.</p>
       <label className="block text-sm font-extrabold">
         Tanggal
         <input type="date" className="field mt-1 font-normal sm:max-w-xs" value={date} onChange={(e) => setDate(e.target.value)} />
