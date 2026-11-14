@@ -4,20 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        army: '#4b5320',
-        olive: '#6b7b3a',
-        sand: '#e8d9a8',
-        cream: '#f6efd8',
-        bark: '#7a5230',
-        ink: '#1f1f1a',
-        gold: '#c9962b',
-        rust: '#a1362a',
+        night: '#0d0f0e',
+        panel: '#151816',
+        panel2: '#1c201d',
+        line: '#2a302b',
+        fg: '#e9efe7',
+        cream: '#e9efe7',
+        muted: '#8d988f',
+        leaf: '#4cc15f',
+        leafbg: '#14301b',
+        army: '#2b7a3d',
+        olive: '#3f9a52',
+        bark: '#8a5d2b',
+        ink: '#0b0d0c',
+        gold: '#d9a62e',
+        rust: '#c9483c',
       },
       fontFamily: {
-        display: ['"Lilita One"', 'Impact', 'sans-serif'],
-        body: ['Nunito', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'system-ui', 'sans-serif'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
       },
-      boxShadow: { soft: '0 5px 14px rgba(31,31,26,0.22)' },
+      boxShadow: { soft: '0 8px 24px rgba(0,0,0,0.35)' },
       keyframes: {
         pop: {
           from: { opacity: '0', transform: 'translateY(-12px) scale(0.97)' },
