@@ -21,11 +21,11 @@ export default function Laporan({ onBack }: { onBack: () => void }) {
             key={name}
             className="card flex flex-col items-center gap-2 px-2 py-5 transition hover:-translate-y-0.5 active:scale-[0.97] focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold"
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-xl border-[3px] border-ink bg-sand text-army">
+            <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-line bg-panel2 text-leaf">
               <Icon size={26} />
             </span>
             <span className="font-display text-lg">{name}</span>
-            <span className="rounded-full border-2 border-ink bg-gold px-3 py-0.5 text-xs font-extrabold">+{points} Poin</span>
+            <span className="rounded-full border border-line bg-gold px-3 py-0.5 text-xs font-extrabold text-ink">+{points} Poin</span>
           </button>
         ))}
       </div>

@@ -21,8 +21,8 @@ export default function Home({ personnel, rank, points, attendance, reports, onN
     <div className="mx-auto max-w-3xl space-y-4">
       <PersonnelCard personnel={personnel} rank={rank} />
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Laporan Duty" value={String(reports.length)} unit="laporan" Icon={FileText} tone="bg-olive" />
-        <StatCard label="Total Jam Duty" value={hours.toFixed(1)} unit="Jam" Icon={Clock} tone="bg-bark" />
+        <StatCard label="Laporan Duty" value={String(reports.length)} unit="laporan" Icon={FileText} />
+        <StatCard label="Total Jam Duty" value={hours.toFixed(1)} unit="Jam" Icon={Clock} />
       </div>
       <RankProgress points={points} />
       <WeekAttendance attendance={attendance} />

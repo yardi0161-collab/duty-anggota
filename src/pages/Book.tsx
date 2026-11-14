@@ -62,22 +62,22 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
               <Save size={18} /> {editId ? 'SIMPAN PERUBAHAN' : 'SIMPAN CATATAN'}
             </button>
             {editId && (
-              <button type="button" onClick={reset} className="btn bg-sand">
+              <button type="button" onClick={reset} className="btn bg-panel2">
                 <X size={18} /> BATAL
               </button>
             )}
           </div>
         </form>
         <h3 className="mt-5 text-lg">Laporan Tersimpan</h3>
-        <ul className="mt-1 divide-y-2 divide-sand text-sm">
+        <ul className="mt-1 divide-y-2 divide-line text-sm">
           {reports.map((r) => (
             <li key={r.id} className="py-1.5">
               <p className="font-extrabold">{r.title}</p>
-              <p className="text-bark">{formatDate(r.date)} · {r.division}</p>
+              <p className="text-muted">{formatDate(r.date)} · {r.division}</p>
               <p>{r.description}</p>
             </li>
           ))}
-          {reports.length === 0 && <li className="py-2 text-bark">Belum ada laporan. Kirim laporan dari halaman Home.</li>}
+          {reports.length === 0 && <li className="py-2 text-muted">Belum ada laporan. Kirim laporan dari halaman Home.</li>}
         </ul>
       </section>
       <section className="space-y-3">
@@ -87,10 +87,10 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <h3 className="text-lg leading-tight">{n.title}</h3>
-                <p className="text-xs font-bold text-bark">{formatDate(n.date)}</p>
+                <p className="text-xs font-bold text-muted">{formatDate(n.date)}</p>
               </div>
               <div className="flex shrink-0 gap-1">
-                <button className="btn bg-gold px-2 py-1" onClick={() => edit(n)} aria-label={`Edit ${n.title}`}>
+                <button className="btn bg-gold px-2 py-1 text-ink" onClick={() => edit(n)} aria-label={`Edit ${n.title}`}>
                   <Pencil size={16} />
                 </button>
                 <button className="btn bg-rust px-2 py-1 text-white" onClick={() => remove(n)} aria-label={`Hapus ${n.title}`}>
@@ -101,7 +101,7 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
             <p className="mt-2 whitespace-pre-wrap text-sm">{n.content}</p>
           </article>
         ))}
-        {notes.length === 0 && <p className="card p-4 text-bark">Belum ada catatan. Tulis catatan pertama di formulir.</p>}
+        {notes.length === 0 && <p className="card p-4 text-muted">Belum ada catatan. Tulis catatan pertama di formulir.</p>}
       </section>
     </div>
   );

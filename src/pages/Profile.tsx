@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { RotateCcw, Save } from 'lucide-react';
+import { LogIn, LogOut, RotateCcw, Save } from 'lucide-react';
 import type { Personnel } from '../types';
 import { DIVISIONS } from '../lib';
-import { Soldier } from '../components/Art';
+import Avatar from '../components/Avatar';
+import { useAuth } from '../auth';
 
 interface Props {
   personnel: Personnel;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function Profile({ personnel, rank, points, attendanceCount, reportCount, onSave, onReset }: Props) {
+  const { enabled, loading, user, signIn, signOut } = useAuth();
   const [form, setForm] = useState<Personnel>(personnel);
   const [error, setError] = useState('');
 
@@ -42,17 +44,33 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <section className="card flex flex-col items-center p-6 text-center">
-        <Soldier size={110} />
+        <Avatar size={110} />
         <h2 className="mt-2 text-2xl">{personnel.name}</h2>
-        <p className="font-display text-lg text-bark">{rank}</p>
+        <p className="font-display text-lg text-muted">{rank}</p>
         <p className="text-sm font-semibold">Divisi {personnel.division} · {personnel.serviceId}</p>
         <div className="mt-4 grid w-full grid-cols-3 gap-2">
           {stats.map((s) => (
-            <div key={s.label} className="rounded-xl border-[3px] border-ink bg-sand p-2">
+            <div key={s.label} className="rounded-xl border border-line bg-panel2 p-2">
               <p className="font-display text-2xl">{s.value}</p>
               <p className="text-xs font-bold">{s.label}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-4 w-full rounded-2xl border border-line bg-panel2 p-3 text-sm">
+          {!enabled && <p className="text-muted">Login Discord belum aktif. Isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY (lihat README).</p>}
+          {enabled && user && (
+            <div className="flex items-center justify-between gap-2">
+              <p className="min-w-0 truncate font-bold">Masuk sebagai {user.name}</p>
+              <button onClick={signOut} className="btn px-3 py-1.5">
+                <LogOut size={16} /> Keluar
+              </button>
+            </div>
+          )}
+          {enabled && !user && (
+            <button onClick={signIn} disabled={loading} className="btn w-full bg-army text-cream">
+              <LogIn size={18} /> LOGIN DENGAN DISCORD
+            </button>
+          )}
         </div>
       </section>
       <section className="card p-4">
@@ -79,7 +97,7 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
             <Save size={18} /> SIMPAN PROFIL
           </button>
         </form>
-        <button onClick={reset} className="btn mt-4 w-full bg-sand">
+        <button onClick={reset} className="btn mt-4 w-full bg-panel2">
           <RotateCcw size={18} /> RESET KE DATA CONTOH
         </button>
       </section>
