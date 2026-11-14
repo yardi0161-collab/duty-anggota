@@ -52,7 +52,7 @@ export default function DutyForm({ personnel, rank, onSubmitted }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-3">
+    <form onSubmit={submit} className="flex h-full flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-3">
         <AccountField label="Nama" value={personnel.name} />
         <AccountField label="Divisi" value={personnel.division} />

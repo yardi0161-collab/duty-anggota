@@ -28,7 +28,7 @@ export default function LeaveForm({ personnel, rank, onSubmitted }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-3">
+    <form onSubmit={submit} className="flex h-full flex-col gap-3">
       <div className="grid gap-3 sm:grid-cols-3">
         <AccountField label="Nama" value={personnel.name} />
         <AccountField label="Pangkat" value={rank} />
@@ -39,10 +39,10 @@ export default function LeaveForm({ personnel, rank, onSubmitted }: Props) {
         Tanggal
         <input type="date" className="field mt-1 font-normal sm:max-w-xs" value={date} onChange={(e) => setDate(e.target.value)} />
       </label>
-      <label className="block text-sm font-extrabold">
+      <label className="flex flex-1 flex-col text-sm font-extrabold">
         Alasan Izin
         <textarea
-          className="field mt-1 min-h-40 font-normal"
+          className="field mt-1 min-h-40 flex-1 font-normal"
           placeholder="Jelaskan alasan pengajuan izin"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
