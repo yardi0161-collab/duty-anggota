@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import type { Attendance, Personnel, Report, ReportInput } from '../types';
-import { todayISO } from '../lib';
+import { ClipboardCheck, Clock, FileText } from 'lucide-react';
+import type { Attendance, Page, Personnel, Report } from '../types';
 import PersonnelCard from '../components/PersonnelCard';
-import AttendanceCard from '../components/AttendanceCard';
-import ReportCard from '../components/ReportCard';
+import StatCard from '../components/StatCard';
 import RankProgress from '../components/RankProgress';
-import Calendar from '../components/Calendar';
+import WeekAttendance from '../components/WeekAttendance';
+import MenuCard from '../components/MenuCard';
 
 interface Props {
   personnel: Personnel;
@@ -13,24 +12,23 @@ interface Props {
   points: number;
   attendance: Attendance[];
   reports: Report[];
-  onOpenAbsensi: () => void;
-  onReport: (r: ReportInput) => void;
+  onNavigate: (p: Page) => void;
 }
 
-export default function Home({ personnel, rank, points, attendance, reports, onOpenAbsensi, onReport }: Props) {
-  const [selected, setSelected] = useState(todayISO());
+export default function Home({ personnel, rank, points, attendance, reports, onNavigate }: Props) {
+  const hours = reports.reduce((s, r) => s + (r.hours ?? 0), 0);
   return (
-    <div className="space-y-4">
+    <div className="mx-auto max-w-3xl space-y-4">
       <PersonnelCard personnel={personnel} rank={rank} />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="space-y-4">
-          <AttendanceCard onOpen={onOpenAbsensi} />
-          <ReportCard reports={reports} defaultDivision={personnel.division} onSubmit={onReport} />
-        </div>
-        <div className="space-y-4">
-          <RankProgress points={points} />
-          <Calendar attendance={attendance} reports={reports} selected={selected} onSelect={setSelected} />
-        </div>
+      <div className="grid grid-cols-2 gap-3">
+        <StatCard label="Laporan Duty" value={String(reports.length)} unit="laporan" Icon={FileText} tone="bg-olive" />
+        <StatCard label="Total Jam Duty" value={hours.toFixed(1)} unit="Jam" Icon={Clock} tone="bg-bark" />
+      </div>
+      <RankProgress points={points} />
+      <WeekAttendance attendance={attendance} />
+      <div className="grid grid-cols-2 gap-3">
+        <MenuCard title="Absensi" Icon={ClipboardCheck} primary onClick={() => onNavigate('absensi')} />
+        <MenuCard title="Laporan" Icon={FileText} onClick={() => onNavigate('laporan')} />
       </div>
     </div>
   );
