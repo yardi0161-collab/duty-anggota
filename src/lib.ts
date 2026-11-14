@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Dispatch, SetStateAction } from 'react';
+import type { CSSProperties, Dispatch, SetStateAction } from 'react';
 import type { Attendance, Note, Personnel, Report, Status } from './types';
 
 export const DIVISIONS = ['Infanteri', 'Kavaleri', 'Artileri', 'Zeni', 'Perhubungan', 'Kesehatan'];
@@ -97,12 +97,62 @@ export const seedAttendance = (): Attendance[] => {
 };
 
 export const seedReports = (): Report[] => [
-  { id: uid(), title: 'Patroli perbatasan sektor utara', description: 'Patroli rutin 3 jam, situasi aman terkendali.', division: 'Infanteri', date: daysAgo(1), points: REPORT_POINTS },
-  { id: uid(), title: 'Latihan baris-berbaris', description: 'Latihan dasar bersama regu, evaluasi kekompakan barisan.', division: 'Infanteri', date: daysAgo(2), points: REPORT_POINTS },
-  { id: uid(), title: 'Pengecekan logistik pos jaga', description: 'Perbekalan dan peralatan pos jaga lengkap.', division: 'Zeni', date: daysAgo(4), points: REPORT_POINTS },
+  { id: uid(), title: 'Patroli perbatasan sektor utara', description: 'Patroli rutin 3 jam, situasi aman terkendali.', division: 'Infanteri', date: daysAgo(1), points: REPORT_POINTS, hours: 3 },
+  { id: uid(), title: 'Latihan baris-berbaris', description: 'Latihan dasar bersama regu, evaluasi kekompakan barisan.', division: 'Infanteri', date: daysAgo(2), points: REPORT_POINTS, hours: 2.5 },
+  { id: uid(), title: 'Pengecekan logistik pos jaga', description: 'Perbekalan dan peralatan pos jaga lengkap.', division: 'Zeni', date: daysAgo(4), points: REPORT_POINTS, hours: 1.5 },
 ];
 
 export const seedNotes = (): Note[] => [
   { id: uid(), title: 'Jadwal apel pekan ini', content: 'Apel pagi pukul 06.30 di lapangan utama. Seragam PDH.', date: daysAgo(1) },
   { id: uid(), title: 'Catatan briefing komandan', content: 'Fokus minggu ini: disiplin waktu dan kelengkapan laporan duty.', date: daysAgo(3) },
 ];
+
+export type SwapPhase = 'in' | 'out' | 'pre';
+
+/** Menahan konten lama sampai animasi keluar selesai, lalu menampilkan konten baru. */
+export function useSwap<T>(target: T, outMs = 150): { shown: T; phase: SwapPhase } {
+  const [shown, setShown] = useState<T>(target);
+  const [phase, setPhase] = useState<SwapPhase>('in');
+
+  useEffect(() => {
+    if (target !== shown && phase !== 'out') setPhase('out');
+  }, [target, shown, phase]);
+
+  useEffect(() => {
+    if (phase === 'out') {
+      const id = setTimeout(() => {
+        setShown(target);
+        setPhase('pre');
+      }, outMs);
+      return () => clearTimeout(id);
+    }
+    if (phase === 'pre') {
+      let r2 = 0;
+      const r1 = requestAnimationFrame(() => {
+        r2 = requestAnimationFrame(() => setPhase('in'));
+      });
+      return () => {
+        cancelAnimationFrame(r1);
+        cancelAnimationFrame(r2);
+      };
+    }
+    return undefined;
+  }, [phase, target, outMs]);
+
+  return { shown, phase };
+}
+
+export function swapStyle(phase: SwapPhase, dir: number, outMs = 150, dist = 14): CSSProperties {
+  if (phase === 'out') {
+    return {
+      opacity: 0,
+      transform: `translateX(${-dir * dist}px)`,
+      transition: `opacity ${outMs}ms ease, transform ${outMs}ms ease`,
+      pointerEvents: 'none',
+    };
+  }
+  if (phase === 'pre') {
+    return { opacity: 0, transform: `translateX(${dir * dist}px)`, transition: 'none', pointerEvents: 'none' };
+  }
+  return { opacity: 1, transform: 'none', transition: 'opacity 250ms ease-out, transform 250ms ease-out' };
+}

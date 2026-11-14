@@ -1,24 +1,17 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { Attendance, Note, NoteInput, Page, Personnel, Report, ReportInput } from './types';
-import {
-  REPORT_POINTS,
-  rankInfo,
-  seedAttendance,
-  seedNotes,
-  seedPersonnel,
-  seedReports,
-  todayISO,
-  uid,
-  useLocalStorage,
-} from './lib';
+import type { ReactNode } from 'react';
+import type { Attendance, Note, NoteInput, Page, Personnel, Report } from './types';
+import { rankInfo, seedAttendance, seedNotes, seedPersonnel, seedReports, todayISO, uid, useLocalStorage } from './lib';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
+import PageTransition from './components/PageTransition';
 import Home from './pages/Home';
 import Log from './pages/Log';
 import Book from './pages/Book';
 import Profile from './pages/Profile';
 import Absensi from './pages/Absensi';
+import Laporan from './pages/Laporan';
 import Placeholder from './pages/Placeholder';
 
 const byDateDesc = <T extends { date: string }>(list: T[]): T[] => [...list].sort((a, b) => b.date.localeCompare(a.date));
@@ -46,11 +39,6 @@ export default function App() {
     setToast({ id, msg });
     setTimeout(() => setToast((t) => (t && t.id === id ? null : t)), 2800);
   }, []);
-
-  const addReport = (data: ReportInput) => {
-    setReports((prev) => [{ id: uid(), ...data, points: REPORT_POINTS }, ...prev]);
-    notify('Laporan terkirim');
-  };
 
   const saveNote = (n: NoteInput) => {
     if (n.id) {
@@ -80,33 +68,43 @@ export default function App() {
     notify('Data dikembalikan ke contoh');
   };
 
+  const renderPage = (p: Page): ReactNode => {
+    switch (p) {
+      case 'home':
+        return <Home personnel={personnel} rank={rank} points={points} attendance={attendance} reports={reports} onNavigate={setPage} />;
+      case 'absensi':
+        return <Absensi personnel={personnel} rank={rank} onBack={() => setPage('home')} onSubmitted={notify} />;
+      case 'laporan':
+        return <Laporan onBack={() => setPage('home')} />;
+      case 'log':
+        return <Log attendance={attendance} reports={reports} />;
+      case 'book':
+        return <Book notes={notes} reports={reports} onSave={saveNote} onDelete={deleteNote} />;
+      case 'bar':
+        return <Placeholder />;
+      case 'profile':
+        return (
+          <Profile
+            key={personnel.name + personnel.serviceId + personnel.division}
+            personnel={personnel}
+            rank={rank}
+            points={points}
+            attendanceCount={attendance.length}
+            reportCount={reports.length}
+            onSave={saveProfile}
+            onReset={resetAll}
+          />
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen md:flex">
       <Sidebar page={page} onChange={setPage} />
-      <div className="min-w-0 flex-1 pb-24 md:pb-0">
+      <div className="min-w-0 flex-1 overflow-x-clip pb-24 md:pb-0">
         <Header name={personnel.name} rank={rank} />
         <main className="mx-auto max-w-6xl p-4 md:p-6">
-          {page === 'home' && (
-            <Home personnel={personnel} rank={rank} points={points} attendance={attendance} reports={reports} onOpenAbsensi={() => setPage('absensi')} onReport={addReport} />
-          )}
-          {page === 'absensi' && (
-            <Absensi personnel={personnel} rank={rank} onBack={() => setPage('home')} onSubmitted={notify} />
-          )}
-          {(page === 'duty' || page === 'bar') && <Placeholder />}
-          {page === 'log' && <Log attendance={attendance} reports={reports} />}
-          {page === 'book' && <Book notes={notes} reports={reports} onSave={saveNote} onDelete={deleteNote} />}
-          {page === 'profile' && (
-            <Profile
-              key={personnel.name + personnel.serviceId + personnel.division}
-              personnel={personnel}
-              rank={rank}
-              points={points}
-              attendanceCount={attendance.length}
-              reportCount={reports.length}
-              onSave={saveProfile}
-              onReset={resetAll}
-            />
-          )}
+          <PageTransition page={page} render={renderPage} />
         </main>
       </div>
       <Toast message={toast ? toast.msg : null} />

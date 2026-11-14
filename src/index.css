@@ -21,7 +21,7 @@
     @apply inline-flex items-center justify-center gap-2 rounded-xl border-[3px] border-ink px-4 py-2 font-display text-base shadow-soft transition active:translate-y-0.5 focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold disabled:opacity-50;
   }
   .field {
-    @apply w-full rounded-xl border-[3px] border-ink bg-cream px-3 py-2 font-body focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold;
+    @apply w-full min-w-0 rounded-xl border-[3px] border-ink bg-cream px-3 py-2 font-body focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold;
   }
 }
 

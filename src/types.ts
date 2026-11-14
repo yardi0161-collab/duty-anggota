@@ -1,5 +1,5 @@
 export type Status = 'HADIR' | 'IZIN' | 'SAKIT' | 'ALPA';
-export type Page = 'home' | 'log' | 'book' | 'profile' | 'absensi' | 'duty' | 'bar';
+export type Page = 'home' | 'log' | 'book' | 'profile' | 'absensi' | 'laporan' | 'bar';
 
 export interface Personnel {
   name: string;
@@ -20,6 +20,7 @@ export interface Report {
   division: string;
   date: string;
   points: number;
+  hours?: number;
 }
 export interface Note {
   id: string;
