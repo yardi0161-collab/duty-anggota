@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Attendance, Personnel, Report, ReportInput, Status } from '../types';
+import type { Attendance, Personnel, Report, ReportInput } from '../types';
 import { todayISO } from '../lib';
 import PersonnelCard from '../components/PersonnelCard';
 import AttendanceCard from '../components/AttendanceCard';
@@ -13,18 +13,18 @@ interface Props {
   points: number;
   attendance: Attendance[];
   reports: Report[];
-  onMark: (s: Status) => void;
+  onOpenAbsensi: () => void;
   onReport: (r: ReportInput) => void;
 }
 
-export default function Home({ personnel, rank, points, attendance, reports, onMark, onReport }: Props) {
+export default function Home({ personnel, rank, points, attendance, reports, onOpenAbsensi, onReport }: Props) {
   const [selected, setSelected] = useState(todayISO());
   return (
     <div className="space-y-4">
       <PersonnelCard personnel={personnel} rank={rank} />
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4">
-          <AttendanceCard attendance={attendance} onMark={onMark} />
+          <AttendanceCard onOpen={onOpenAbsensi} />
           <ReportCard reports={reports} defaultDivision={personnel.division} onSubmit={onReport} />
         </div>
         <div className="space-y-4">
