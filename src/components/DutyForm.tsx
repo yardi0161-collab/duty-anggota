@@ -52,14 +52,13 @@ export default function DutyForm({ personnel, rank, onSubmitted }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="card space-y-3 p-4">
-      <h2 className="text-2xl">Form Laporan Duty</h2>
+    <form onSubmit={submit} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-3">
         <AccountField label="Nama" value={personnel.name} />
-        <AccountField label="Devisi" value={personnel.division} />
+        <AccountField label="Divisi" value={personnel.division} />
         <AccountField label="Pangkat" value={rank} />
       </div>
-      <p className="text-xs font-semibold text-bark">Nama, devisi, dan pangkat terisi otomatis dari akun.</p>
+      <p className="text-xs font-semibold text-bark">Nama, divisi, dan pangkat akan terisi otomatis dari akun nanti.</p>
       <div className="grid gap-3 sm:grid-cols-3">
         <label className="block text-sm font-extrabold">
           Tanggal

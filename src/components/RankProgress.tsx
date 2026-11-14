@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Medal, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { rankInfo } from '../lib';
 
 export default function RankProgress({ points }: { points: number }) {
@@ -10,23 +10,33 @@ export default function RankProgress({ points }: { points: number }) {
     return () => clearTimeout(t);
   }, [percent]);
 
+  const remaining = next ? Math.max(0, next.points - points) : 0;
+
   return (
     <section className="card p-4">
-      <h2 className="flex items-center gap-2 text-xl">
-        <Medal size={22} className="text-gold" /> Progres Kenaikan Pangkat
-      </h2>
-      <div className="mt-3 flex items-center justify-between gap-2 text-sm font-semibold">
-        <div>
-          <p className="text-bark">Pangkat saat ini</p>
-          <p className="font-display text-lg">{current.name}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-extrabold text-bark">Target Pangkat Selanjutnya</p>
+          <p className="font-display text-2xl leading-tight">{next ? next.name : 'Pangkat tertinggi'}</p>
+          <p className="text-xs font-bold text-bark">Pangkat saat ini: {current.name}</p>
         </div>
-        <div className="text-right">
-          <p className="text-bark">Target pangkat</p>
-          <p className="font-display text-lg">{next ? next.name : 'Pangkat tertinggi'}</p>
+        <div className="grid shrink-0 grid-cols-2 gap-2 text-center">
+          <div className="rounded-xl border-[3px] border-ink bg-sand px-2 py-1">
+            <p className="text-[11px] font-extrabold text-bark">Poin</p>
+            <p className="font-display text-xl leading-tight">{points}</p>
+          </div>
+          <div className="rounded-xl border-[3px] border-ink bg-sand px-2 py-1">
+            <p className="text-[11px] font-extrabold text-bark">Kurang</p>
+            <p className="font-display text-xl leading-tight">{remaining}</p>
+          </div>
         </div>
       </div>
+      <div className="mt-3 flex items-center justify-between text-sm font-extrabold">
+        <span>Progres kenaikan pangkat</span>
+        <span>{percent}%</span>
+      </div>
       <div
-        className="relative mt-3 h-7 overflow-hidden rounded-full border-[3px] border-ink bg-sand"
+        className="relative mt-1 h-7 overflow-hidden rounded-full border-[3px] border-ink bg-sand"
         role="progressbar"
         aria-valuenow={percent}
         aria-valuemin={0}
@@ -41,11 +51,9 @@ export default function RankProgress({ points }: { points: number }) {
         />
         <Star size={16} className="absolute right-2 top-1/2 -translate-y-1/2 text-gold" fill="currentColor" />
       </div>
-      <div className="mt-2 flex justify-between text-sm font-bold">
-        <span>Total poin: {points}</span>
-        <span>{next ? `Target poin: ${next.points}` : 'Target tercapai'}</span>
-        <span>{percent}%</span>
-      </div>
+      <p className="mt-1 text-xs font-bold text-bark">
+        {next ? `Total poin: ${points}/${next.points}` : 'Target tercapai'}
+      </p>
     </section>
   );
 }

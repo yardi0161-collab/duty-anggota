@@ -1,6 +1,7 @@
-import { Award, BadgeCheck, Flag, User } from 'lucide-react';
+import { Award, BadgeCheck, Flag } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Personnel } from '../types';
+import { Emblem, Soldier } from './Art';
 
 interface Props {
   personnel: Personnel;
@@ -8,25 +9,30 @@ interface Props {
 }
 
 export default function PersonnelCard({ personnel, rank }: Props) {
-  const items: { label: string; value: string; Icon: LucideIcon; tone: string }[] = [
-    { label: 'Nama', value: personnel.name, Icon: User, tone: 'bg-olive' },
-    { label: 'Pangkat', value: rank, Icon: Award, tone: 'bg-gold' },
-    { label: 'Divisi', value: personnel.division, Icon: Flag, tone: 'bg-bark' },
-    { label: 'ID Personel', value: personnel.serviceId, Icon: BadgeCheck, tone: 'bg-army' },
+  const chips: { text: string; Icon: LucideIcon }[] = [
+    { text: rank, Icon: Award },
+    { text: personnel.division, Icon: Flag },
+    { text: `Badge #${personnel.serviceId}`, Icon: BadgeCheck },
   ];
   return (
-    <section aria-label="Identitas personel" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-      {items.map(({ label, value, Icon, tone }) => (
-        <div key={label} className="card flex items-center gap-3 p-3">
-          <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-[3px] border-ink text-white ${tone}`}>
-            <Icon size={24} />
-          </span>
-          <div className="min-w-0">
-            <p className="text-xs font-extrabold text-bark">{label}</p>
-            <p className="truncate font-display text-lg leading-tight">{value}</p>
-          </div>
+    <section aria-label="Profil anggota" className="card relative overflow-hidden p-4">
+      <div className="pointer-events-none absolute -right-4 -top-4 opacity-15">
+        <Emblem size={130} />
+      </div>
+      <div className="relative flex items-center gap-3">
+        <Soldier size={64} />
+        <div className="min-w-0">
+          <p className="text-sm font-extrabold text-bark">Profil Anggota</p>
+          <h2 className="truncate text-2xl leading-tight md:text-3xl">{personnel.name}</h2>
         </div>
-      ))}
+      </div>
+      <div className="relative mt-3 flex flex-wrap gap-2">
+        {chips.map(({ text, Icon }) => (
+          <span key={text} className="inline-flex items-center gap-1 rounded-full border-[3px] border-ink bg-sand px-3 py-1 text-sm font-extrabold">
+            <Icon size={14} /> {text}
+          </span>
+        ))}
+      </div>
     </section>
   );
 }

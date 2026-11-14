@@ -6,7 +6,7 @@ const ITEMS: { id: Page; label: string; short: string; Icon: LucideIcon }[] = [
   { id: 'home', label: 'HOME', short: 'HOME', Icon: Home },
   { id: 'log', label: 'LOG', short: 'LOG', Icon: ScrollText },
   { id: 'book', label: 'BUKU', short: 'BUKU', Icon: BookOpen },
-  { id: 'duty', label: 'LAPORAN DUTY', short: 'DUTY', Icon: ClipboardList },
+  { id: 'laporan', label: 'LAPORAN', short: 'LAPORAN', Icon: ClipboardList },
   { id: 'bar', label: 'BAR', short: 'BAR', Icon: LayoutGrid },
   { id: 'profile', label: 'PROFILE', short: 'PROFIL', Icon: User },
 ];
@@ -23,7 +23,7 @@ export default function Sidebar({ page, onChange }: Props) {
       className="fixed inset-x-0 bottom-0 z-30 flex border-t-4 border-ink bg-bark p-2 md:sticky md:top-0 md:h-screen md:w-48 md:shrink-0 md:flex-col md:gap-2 md:border-r-4 md:border-t-0 md:p-3 md:pt-6"
     >
       {ITEMS.map(({ id, label, short, Icon }) => {
-        const active = page === id;
+        const active = page === id || (id === 'home' && page === 'absensi');
         return (
           <button
             key={id}

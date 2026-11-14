@@ -28,14 +28,13 @@ export default function LeaveForm({ personnel, rank, onSubmitted }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="card space-y-3 p-4">
-      <h2 className="text-2xl">Form Izin</h2>
+    <form onSubmit={submit} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-3">
         <AccountField label="Nama" value={personnel.name} />
         <AccountField label="Pangkat" value={rank} />
-        <AccountField label="Devisi" value={personnel.division} />
+        <AccountField label="Divisi" value={personnel.division} />
       </div>
-      <p className="text-xs font-semibold text-bark">Data akun terisi otomatis.</p>
+      <p className="text-xs font-semibold text-bark">Data akun akan terisi otomatis nanti.</p>
       <label className="block text-sm font-extrabold">
         Tanggal
         <input type="date" className="field mt-1 font-normal sm:max-w-xs" value={date} onChange={(e) => setDate(e.target.value)} />
