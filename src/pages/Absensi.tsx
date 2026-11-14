@@ -12,6 +12,7 @@ interface Props {
   rank: string;
   onBack: () => void;
   onSubmitted: (msg: string) => void;
+  onTabSwitch: () => void;
 }
 
 // Panel ditumpuk dalam satu sel grid agar tinggi kotak selalu stabil.
@@ -21,8 +22,13 @@ const ACTIVE = 'visible opacity-100 translate-x-0 delay-100 duration-200 transit
 const hidden = (side: 'left' | 'right') =>
   `invisible opacity-0 pointer-events-none ${side === 'left' ? '-translate-x-6' : 'translate-x-6'} transition-[opacity,transform,visibility] duration-150 ease-in`;
 
-export default function Absensi({ personnel, rank, onBack, onSubmitted }: Props) {
+export default function Absensi({ personnel, rank, onBack, onSubmitted, onTabSwitch }: Props) {
   const [tab, setTab] = useState<Tab>('duty');
+  const pick = (t: Tab) => {
+    if (t === tab) return;
+    onTabSwitch();
+    setTab(t);
+  };
   const tabBtn =
     'relative z-10 flex items-center justify-center gap-2 rounded-xl py-2 font-display text-base transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf';
 
@@ -51,10 +57,10 @@ export default function Absensi({ personnel, rank, onBack, onSubmitted }: Props)
             className="absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-xl border border-leaf/50 bg-leafbg transition-transform duration-300 ease-out"
             style={{ transform: tab === 'izin' ? 'translateX(100%)' : 'translateX(0)' }}
           />
-          <button role="tab" aria-selected={tab === 'duty'} className={`${tabBtn} ${tab === 'duty' ? 'text-leaf' : 'text-muted'}`} onClick={() => setTab('duty')}>
+          <button role="tab" aria-selected={tab === 'duty'} className={`${tabBtn} ${tab === 'duty' ? 'text-leaf' : 'text-muted'}`} onClick={() => pick('duty')}>
             <FileText size={18} /> Laporan Duty
           </button>
-          <button role="tab" aria-selected={tab === 'izin'} className={`${tabBtn} ${tab === 'izin' ? 'text-leaf' : 'text-muted'}`} onClick={() => setTab('izin')}>
+          <button role="tab" aria-selected={tab === 'izin'} className={`${tabBtn} ${tab === 'izin' ? 'text-leaf' : 'text-muted'}`} onClick={() => pick('izin')}>
             <Mail size={18} /> Izin
           </button>
         </div>
