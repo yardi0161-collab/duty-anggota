@@ -14,7 +14,7 @@ export default {
         leaf: '#4cc15f',
         leafbg: '#14301b',
         army: '#2b7a3d',
-        olive: '#3f9a52',
+        olive: '#2f7d40',
         bark: '#8a5d2b',
         ink: '#0b0d0c',
         gold: '#d9a62e',
