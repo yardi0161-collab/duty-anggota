@@ -9,19 +9,12 @@ export interface Profile {
 export interface AttendanceRow {
   id: string;
   date: string;
+  endDate: string | null;
   kind: Kind;
   startTime: string | null;
   endTime: string | null;
   content: string;
-  photoPath: string | null;
-}
-export interface ReportRow {
-  id: string;
-  category: string;
-  title: string;
-  description: string;
-  date: string;
-  createdAt: string;
+  photoPaths: string[];
 }
 export interface NoteRow {
   id: string;
@@ -34,25 +27,29 @@ export interface LogRow {
   memberName: string;
   action: string;
   detail: string;
-  photoPath: string | null;
+  photoPaths: string[];
   createdAt: string;
+}
+export interface Access {
+  verified: boolean;
+  rankName: string | null;
+  rankOrder: number | null;
+}
+export interface RankRole {
+  rankName: string;
+  rankOrder: number;
 }
 export interface DutyInput {
   date: string;
   start: string;
   end: string;
   content: string;
-  photo: File | null;
+  photos: File[];
 }
-export interface IzinInput {
-  date: string;
+export interface CutiInput {
+  startDate: string;
+  endDate: string;
   reason: string;
-}
-export interface ReportInput {
-  category: string;
-  title: string;
-  description: string;
-  date: string;
 }
 export interface NoteInput {
   id?: string;

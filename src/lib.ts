@@ -1,43 +1,38 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
-import type { Kind } from './types';
 
 export const DIVISIONS = ['Infanteri', 'Kavaleri', 'Artileri', 'Zeni', 'Perhubungan', 'Kesehatan'];
 
-export const RANKS = [
-  { name: 'Prajurit Dua', points: 0 },
-  { name: 'Prajurit Satu', points: 60 },
-  { name: 'Prajurit Kepala', points: 140 },
-  { name: 'Kopral Dua', points: 240 },
-  { name: 'Kopral Satu', points: 360 },
-  { name: 'Sersan Dua', points: 500 },
-  { name: 'Sersan Satu', points: 680 },
-  { name: 'Sersan Mayor', points: 900 },
-];
 
-export const ATTENDANCE_POINTS: Record<Kind, number> = { duty: 10, izin: 2 };
-
-export const REPORT_CATEGORIES = [
-  { name: 'Penangkapan', points: 3 },
-  { name: 'Kasus Besar', points: 10 },
-  { name: 'Patroli', points: 5 },
-  { name: 'Backup', points: 3 },
-  { name: 'Penilangan', points: 2 },
-  { name: 'Administrasi', points: 6 },
-];
-export const categoryPoints = (name: string): number => REPORT_CATEGORIES.find((c) => c.name === name)?.points ?? 0;
-
-export function rankInfo(points: number) {
-  const index = RANKS.reduce((acc, r, i) => (points >= r.points ? i : acc), 0);
-  const current = RANKS[index];
-  const next = RANKS[index + 1] ?? null;
-  return { current, next };
-}
+export const NO_ROLE = 'Belum bergabung/mendapatkan role Discord';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 export const toISO = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 export const todayISO = () => toISO(new Date());
 export const localDate = (stamp: string) => toISO(new Date(stamp));
+export const initials = (name: string): string =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => (w[0] ? w[0].toUpperCase() : ''))
+    .join('') || '?';
+
+/** Semua tanggal yang tercakup absensi atau rentang cuti. */
+export function coveredDates(rows: { date: string; endDate: string | null }[]): string[] {
+  const out: string[] = [];
+  for (const r of rows) {
+    const [y, m, d] = r.date.split('-').map(Number);
+    const end = r.endDate ?? r.date;
+    let cur = new Date(y, m - 1, d);
+    for (let i = 0; i < 400 && toISO(cur) <= end; i++) {
+      out.push(toISO(cur));
+      cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
+    }
+  }
+  return out;
+}
+
 export const formatDate = (iso: string) => {
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(y, m - 1, d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });

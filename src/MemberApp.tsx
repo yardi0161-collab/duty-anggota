@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthUser } from './auth';
-import type { DutyInput, IzinInput, NoteInput, Page, Profile as ProfileData, ReportInput } from './types';
-import { ATTENDANCE_POINTS, categoryPoints, dutyHours, rankInfo } from './lib';
+import type { CutiInput, DutyInput, NoteInput, Page, Profile as ProfileData } from './types';
+import { NO_ROLE, dutyHours } from './lib';
 import { useMemberData } from './data';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -19,7 +19,7 @@ import Laporan from './pages/Laporan';
 const LOAD_MS = 450;
 
 export default function MemberApp({ user }: { user: AuthUser }) {
-  const { data, error, loading, refresh, submitDuty, submitIzin, submitReport, saveNote, deleteNote, saveProfile } = useMemberData(user);
+  const { data, error, loading, refresh, submitDuty, submitCuti, saveNote, deleteNote, saveProfile } = useMemberData(user);
   const [page, setPage] = useState<Page>('home');
   const [toast, setToast] = useState<{ id: number; msg: string } | null>(null);
   const [navLoading, setNavLoading] = useState(false);
@@ -62,12 +62,11 @@ export default function MemberApp({ user }: { user: AuthUser }) {
     );
   }
 
-  const { profile, attendance, reports, notes, log } = data;
-  const points = Math.max(
-    0,
-    attendance.reduce((s, a) => s + ATTENDANCE_POINTS[a.kind], 0) + reports.reduce((s, r) => s + categoryPoints(r.category), 0),
-  );
-  const rank = rankInfo(points).current.name;
+  const { profile, attendance, notes, log, access, ranks, verifyNote } = data;
+  const verified = access.verified && access.rankName !== null;
+  const rank = verified && access.rankName ? access.rankName : NO_ROLE;
+  const curOrder = access.rankOrder;
+  const nextRank = verified && curOrder !== null ? (ranks.find((r) => r.rankOrder > curOrder)?.rankName ?? null) : null;
   const dutyRows = attendance.filter((a) => a.kind === 'duty');
   const hours = dutyRows.reduce((s, a) => s + dutyHours(a.startTime, a.endTime), 0);
 
@@ -79,20 +78,21 @@ export default function MemberApp({ user }: { user: AuthUser }) {
   const renderPage = (p: Page): ReactNode => {
     switch (p) {
       case 'home':
-        return <Home personnel={profile} rank={rank} points={points} attendance={attendance} dutyCount={dutyRows.length} hours={hours} onNavigate={go} />;
+        return <Home personnel={profile} rank={rank} nextRank={nextRank} verified={verified} attendance={attendance} dutyCount={dutyRows.length} hours={hours} onNavigate={go} />;
       case 'absensi':
         return (
           <Absensi
             personnel={profile}
             rank={rank}
+            verified={verified}
             onBack={() => go('home')}
-            onDuty={(i: DutyInput) => act(() => submitDuty(i), 'Laporan duty tersimpan')}
-            onIzin={(i: IzinInput) => act(() => submitIzin(i), 'Pengajuan izin tersimpan')}
+            onDuty={(i: DutyInput) => act(() => submitDuty(i), 'Presensi duty tersimpan')}
+            onCuti={(i: CutiInput) => act(() => submitCuti(i), 'Pengajuan cuti tersimpan')}
             onTabSwitch={flashLoading}
           />
         );
       case 'laporan':
-        return <Laporan reports={reports} onBack={() => go('home')} onSubmit={(i: ReportInput) => act(() => submitReport(i), 'Laporan tersimpan')} />;
+        return <Laporan />;
       case 'log':
         return <Log log={log} />;
       case 'book':
@@ -109,9 +109,11 @@ export default function MemberApp({ user }: { user: AuthUser }) {
             key={profile.name + profile.serviceId + profile.division}
             personnel={profile}
             rank={rank}
-            points={points}
+            verified={verified}
+            verifyNote={verifyNote}
             attendanceCount={attendance.length}
-            reportCount={reports.length}
+            dutyCount={dutyRows.length}
+            leaveCount={attendance.length - dutyRows.length}
             onSave={(p: ProfileData) => act(() => saveProfile(p), 'Profil tersimpan')}
           />
         );
