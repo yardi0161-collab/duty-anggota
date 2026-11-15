@@ -61,10 +61,14 @@ export default function Log({ log }: { log: LogRow[] }) {
               {r.memberName} {r.action}.
             </p>
             {r.detail && <p className="break-words text-sm text-muted">{r.detail}</p>}
-            {r.photoPath && (
-              <button onClick={() => openPhoto(r.photoPath as string)} className="btn mt-2 px-3 py-1.5 text-sm">
-                <ImageIcon size={16} /> Lihat foto
-              </button>
+            {r.photoPaths.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {r.photoPaths.map((p, i) => (
+                  <button key={p} onClick={() => openPhoto(p)} className="btn px-3 py-1.5 text-sm">
+                    <ImageIcon size={16} /> Foto {i + 1}
+                  </button>
+                ))}
+              </div>
             )}
           </li>
         ))}

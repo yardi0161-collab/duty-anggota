@@ -2,21 +2,24 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { LogOut, Save } from 'lucide-react';
 import type { Profile as ProfileData } from '../types';
-import { DIVISIONS } from '../lib';
+import { DIVISIONS, NO_ROLE } from '../lib';
 import Avatar from '../components/Avatar';
 import { useAuth } from '../auth';
 
 interface Props {
   personnel: ProfileData;
   rank: string;
-  points: number;
+  verified: boolean;
+  verifyNote: string;
   attendanceCount: number;
-  reportCount: number;
+  dutyCount: number;
+  leaveCount: number;
   onSave: (p: ProfileData) => Promise<void>;
 }
 
-export default function Profile({ personnel, rank, points, attendanceCount, reportCount, onSave }: Props) {
-  const { signOut } = useAuth();
+export default function Profile({ personnel, rank, verified, verifyNote, attendanceCount, dutyCount, leaveCount, onSave }: Props) {
+  const { signIn, signOut } = useAuth();
+  const [authError, setAuthError] = useState('');
   const [form, setForm] = useState<ProfileData>(personnel);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -39,9 +42,9 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
   };
 
   const stats = [
-    { label: 'Total poin', value: points },
     { label: 'Absensi', value: attendanceCount },
-    { label: 'Laporan', value: reportCount },
+    { label: 'Duty', value: dutyCount },
+    { label: 'Cuti', value: leaveCount },
   ];
 
   return (
@@ -49,7 +52,7 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
       <section className="card flex flex-col items-center p-6 text-center">
         <Avatar size={110} />
         <h2 className="mt-2 break-words text-2xl">{personnel.name}</h2>
-        <p className="font-display text-lg text-muted">{rank}</p>
+        <p className="break-words font-display text-lg text-muted">{verified ? rank : NO_ROLE}</p>
         <p className="break-words text-sm font-semibold">
           {personnel.division ? `Divisi ${personnel.division}` : 'Divisi belum diatur'}
           {personnel.serviceId ? ` · ${personnel.serviceId}` : ''}
@@ -62,7 +65,16 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
             </div>
           ))}
         </div>
-        <button onClick={() => void signOut()} className="btn mt-4 w-full">
+        <div className="mt-4 w-full rounded-xl border border-line bg-panel2 p-3 text-left text-sm">
+          <p className="font-extrabold">{verified ? 'AKSES TERVERIFIKASI' : 'BELUM TERVERIFIKASI'}</p>
+          {!verified && <p className="mt-1 break-words text-muted">{NO_ROLE}</p>}
+          {verifyNote && <p className="mt-1 break-words text-rust">{verifyNote}</p>}
+          {authError && <p className="mt-1 break-words text-rust">{authError}</p>}
+          <button onClick={async () => setAuthError((await signIn()) ?? '')} className="btn mt-2 w-full">
+            VERIFIKASI ULANG (LOGIN DISCORD)
+          </button>
+        </div>
+        <button onClick={() => void signOut()} className="btn mt-3 w-full">
           <LogOut size={18} /> KELUAR
         </button>
       </section>
