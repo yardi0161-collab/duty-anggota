@@ -19,7 +19,7 @@ export default function LoadingScreen({ show }: { show: boolean }) {
     <div
       role="status"
       aria-live="polite"
-      className={`pointer-events-none fixed inset-0 z-[60] flex flex-col items-center justify-center bg-[radial-gradient(circle_at_center,#14301b_0%,#0d0f0e_70%)] transition-opacity duration-200 ${
+      className={`pointer-events-none fixed inset-0 z-[60] flex flex-col items-center justify-center bg-night transition-opacity duration-200 ${
         show ? 'opacity-100' : 'opacity-0'
       }`}
     >
