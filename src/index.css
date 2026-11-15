@@ -12,6 +12,12 @@
   h1, h2, h3 {
     @apply font-display;
   }
+  button, [role='button'], [role='tab'], select, summary, label[for], a[href] {
+    cursor: pointer;
+  }
+  button:disabled, select:disabled {
+    cursor: not-allowed;
+  }
 }
 
 @layer components {
@@ -19,10 +25,10 @@
     font-weight: 800;
   }
   .card {
-    @apply rounded-3xl border border-line bg-panel shadow-soft;
+    @apply rounded-3xl border border-line bg-panel;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 font-display text-base transition active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf disabled:opacity-50;
+    @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-xl border border-line bg-panel2 px-4 py-2 font-display text-base transition hover:brightness-125 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf disabled:opacity-50;
   }
   .field {
     @apply w-full min-w-0 rounded-xl border border-line bg-panel2 px-3 py-2 font-body text-fg placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf;

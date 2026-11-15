@@ -16,7 +16,7 @@ interface AuthState {
   enabled: boolean;
   loading: boolean;
   user: AuthUser | null;
-  signIn: () => Promise<void>;
+  signIn: () => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -24,7 +24,7 @@ const Ctx = createContext<AuthState>({
   enabled: false,
   loading: false,
   user: null,
-  signIn: async () => {},
+  signIn: async () => null,
   signOut: async () => {},
 });
 
@@ -59,7 +59,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       user: toUser(session),
       signIn: async () => {
-        if (supabase) await supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.origin } });
+        if (!supabase) return 'Login belum dikonfigurasi.';
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.origin } });
+        return error ? error.message : null;
       },
       signOut: async () => {
         if (supabase) await supabase.auth.signOut();
