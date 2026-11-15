@@ -1,30 +1,28 @@
 # Army Faction System
 
-Personnel Attendance & Duty Management (React + TypeScript + Tailwind + Lucide).
+Personnel Attendance & Duty Management. React + TypeScript + Tailwind + Lucide + Supabase (Auth Discord, Postgres, Storage).
 
-## Jalankan di VS Code
+## Siapkan database (sekali saja)
+1. Buat project di supabase.com.
+2. SQL Editor > New query: tempel isi `supabase/schema.sql` > Run. Skrip ini membuat tabel, aturan keamanan per anggota (RLS), trigger log aktivitas, dan bucket foto privat `duty-photos`.
+3. Authentication > Providers > Discord: isi Client ID dan Client Secret dari Discord Developer Portal.
+4. Discord Developer Portal: tambahkan Redirect URL `https://<project>.supabase.co/auth/v1/callback`.
+5. Supabase > Authentication > URL Configuration: isi Site URL dan Redirect URLs dengan alamat website (localhost dan domain Vercel).
+
+## Jalankan
 ```bash
+cp .env.example .env.local   # isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY
 npm install
 npm run dev
 ```
-
-## Build & cek TypeScript
-```bash
-npm run build
-```
+Build dan cek TypeScript: `npm run build`.
 
 ## Deploy ke Vercel
-1. Upload folder ini ke GitHub.
-2. Di Vercel: Add New Project, pilih repo. Framework otomatis terdeteksi sebagai Vite.
-3. Klik Deploy (build command `npm run build`, output `dist`).
+Upload ke GitHub, import di Vercel (Vite terdeteksi otomatis), isi dua Environment Variables yang sama dengan `.env.example`, lalu Deploy.
 
-Data tersimpan di localStorage browser. Menu Profile punya tombol reset ke data contoh.
-
-## Login Discord (foto profil OAuth2)
-Login memakai Supabase Auth dengan provider Discord. Tanpa konfigurasi, website tetap jalan dan header memakai logo TNI AD.
-
-1. Buat project di supabase.com, lalu Authentication > Providers > Discord (isi Client ID dan Client Secret dari Discord Developer Portal).
-2. Di Discord Developer Portal, tambahkan Redirect URL dari Supabase (`https://<project>.supabase.co/auth/v1/callback`).
-3. Di Supabase: Authentication > URL Configuration, isi Site URL dan Redirect URLs dengan alamat website (localhost dan domain Vercel).
-4. Salin `.env.example` menjadi `.env.local`, isi nilainya. Di Vercel isi Environment Variables dengan nama yang sama.
-5. Buka menu Profile (ketuk foto di header), lalu tekan LOGIN DENGAN DISCORD.
+## Cara kerja data
+- Setiap anggota login dengan Discord. Semua data terikat ke id akunnya dan dibatasi RLS, jadi anggota lain tidak bisa melihat atau mengubahnya.
+- Absensi: Form Laporan Duty (jam mulai, jam selesai, kegiatan, foto) atau Form Izin. Satu absensi per tanggal. Tanggal hijau di dashboard berarti sudah ada absensi, merah berarti belum.
+- Laporan: pilih kategori, isi, kirim. Tampil di "Laporan Saya".
+- Log aktivitas ditulis otomatis oleh trigger database saat absensi, laporan, atau catatan disimpan. Browser tidak bisa menulis atau memalsukan log.
+- Poin dihitung dari data: Duty +10, Izin +2, ditambah poin kategori laporan.
