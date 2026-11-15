@@ -18,7 +18,7 @@ export default function AttendanceCard({ onOpen }: Props) {
   return (
     <button
       onClick={onOpen}
-      className="card w-full p-4 text-left transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold"
+      className="card w-full p-4 text-left transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-4 focus-visible:outline-leaf"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">

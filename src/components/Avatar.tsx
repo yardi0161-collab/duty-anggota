@@ -14,6 +14,8 @@ export default function Avatar({ size = 48 }: { size?: number }) {
     <img
       src={src}
       alt={isLogo ? 'Logo TNI AD' : 'Foto profil'}
+      width={size}
+      height={size}
       referrerPolicy="no-referrer"
       onError={() => {
         if (photo) setFailed(photo);

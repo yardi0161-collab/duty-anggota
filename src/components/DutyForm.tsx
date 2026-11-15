@@ -89,7 +89,7 @@ export default function DutyForm({ personnel, rank, onSubmitted }: Props) {
           <input type="file" accept="image/*" className="sr-only" onChange={pickPhoto} />
         </label>
         {photo && <span className="ml-2 text-sm font-semibold">{photo.name}</span>}
-        {preview && <img src={preview} alt="Pratinjau foto bukti duty" className="mt-2 max-h-56 rounded-xl border border-line object-cover" />}
+        {preview && <img src={preview} alt="Pratinjau foto bukti duty" width={320} height={224} className="mt-2 max-h-56 rounded-xl border border-line object-cover" />}
       </div>
       {error && <p className="text-sm font-bold text-rust">{error}</p>}
       <button type="submit" className="btn w-full bg-army text-cream">

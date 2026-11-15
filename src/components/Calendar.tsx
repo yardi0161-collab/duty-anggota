@@ -59,7 +59,7 @@ export default function Calendar({ attendance, reports, selected, onSelect }: Pr
               key={iso}
               onClick={() => onSelect(iso)}
               aria-pressed={isSel}
-              className={`flex aspect-square flex-col items-center justify-center rounded-lg border text-sm font-bold transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-gold ${
+              className={`flex aspect-square flex-col items-center justify-center rounded-lg border text-sm font-bold transition focus-visible:outline focus-visible:outline-4 focus-visible:outline-leaf ${
                 isSel ? 'border-line bg-army text-cream' : iso === today ? 'border-gold bg-panel2' : 'border-transparent hover:bg-panel2'
               }`}
             >

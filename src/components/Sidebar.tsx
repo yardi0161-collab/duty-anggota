@@ -17,7 +17,7 @@ export default function Sidebar({ page, onChange }: Props) {
   return (
     <nav
       aria-label="Menu utama"
-      className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-night/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:sticky md:top-0 md:h-screen md:w-48 md:shrink-0 md:flex-col md:gap-1 md:border-r md:border-t-0 md:p-3 md:pt-6"
+      className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-night/95 pb-[env(safe-area-inset-bottom)] md:sticky md:top-0 md:h-screen md:w-48 md:shrink-0 md:flex-col md:gap-1 md:border-r md:border-t-0 md:p-3 md:pt-6"
     >
       {ITEMS.map(({ id, label, Icon }) => {
         const active = page === id || (id === 'home' && (page === 'absensi' || page === 'laporan'));
