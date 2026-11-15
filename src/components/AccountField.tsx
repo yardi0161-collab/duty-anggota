@@ -7,11 +7,11 @@ interface Props {
 
 export default function AccountField({ label, value }: Props) {
   return (
-    <label className="block text-sm font-extrabold">
+    <div className="text-sm font-extrabold">
       <span className="flex items-center gap-1">
-        {label} <Lock size={12} className="text-muted" />
+        {label} <Lock size={12} className="text-muted" aria-hidden="true" />
       </span>
-      <input readOnly value={value} className="field mt-1 cursor-not-allowed bg-night font-normal text-muted" />
-    </label>
+      <p className="field mt-1 min-h-[44px] cursor-not-allowed whitespace-normal break-words bg-night font-normal text-muted">{value}</p>
+    </div>
   );
 }

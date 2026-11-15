@@ -19,7 +19,7 @@ export default function MenuCard({ title, Icon, primary = false, onClick }: Prop
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-night/60 text-leaf">
         <Icon size={22} />
       </span>
-      <span className="min-w-0 flex-1 truncate font-display text-lg">{title}</span>
+      <span className="min-w-0 flex-1 break-words font-display text-lg">{title}</span>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-panel2 text-fg">
         <ArrowRight size={16} />
       </span>

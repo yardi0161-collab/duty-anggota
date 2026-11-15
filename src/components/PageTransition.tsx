@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type { Page } from '../types';
 import { swapStyle, useSwap } from '../lib';
 
-const ORDER: Page[] = ['home', 'absensi', 'laporan', 'log', 'book', 'bar', 'profile'];
+const ORDER: Page[] = ['home', 'absensi', 'laporan', 'log', 'book', 'profile'];
 
 interface Props {
   page: Page;

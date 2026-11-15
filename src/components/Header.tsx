@@ -18,8 +18,8 @@ export default function Header({ onProfile }: Props) {
           <Avatar size={48} />
         </button>
         <div className="min-w-0">
-          <h1 className="truncate text-xl leading-tight md:text-2xl">ARMY FACTION SYSTEM</h1>
-          <p className="truncate text-xs font-semibold text-muted md:text-sm">Personnel Attendance &amp; Duty Management</p>
+          <h1 className="break-words text-xl leading-tight md:text-2xl">ARMY FACTION SYSTEM</h1>
+          <p className="break-words text-xs font-semibold text-muted md:text-sm">Personnel Attendance &amp; Duty Management</p>
         </div>
       </div>
     </header>
