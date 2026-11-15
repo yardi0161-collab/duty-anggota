@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Pencil, Save, Trash2, X } from 'lucide-react';
-import type { Note, NoteInput, Report } from '../types';
-import { formatDate } from '../lib';
+import type { NoteInput, NoteRow } from '../types';
+import { formatStamp } from '../lib';
 
 interface Props {
-  notes: Note[];
-  reports: Report[];
-  onSave: (n: NoteInput) => void;
-  onDelete: (id: string) => void;
+  notes: NoteRow[];
+  onSave: (n: NoteInput) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 }
 
-export default function Book({ notes, reports, onSave, onDelete }: Props) {
+export default function Book({ notes, onSave, onDelete }: Props) {
   const [editId, setEditId] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
   const reset = () => {
     setEditId(undefined);
@@ -24,17 +24,24 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
     setError('');
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
       setError('Isi judul dan isi catatan terlebih dahulu.');
       return;
     }
-    onSave({ id: editId, title: title.trim(), content: content.trim() });
-    reset();
+    setBusy(true);
+    try {
+      await onSave({ id: editId, title: title.trim(), content: content.trim() });
+      reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menyimpan catatan.');
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const edit = (n: Note) => {
+  const edit = (n: NoteRow) => {
     setEditId(n.id);
     setTitle(n.title);
     setContent(n.content);
@@ -42,10 +49,13 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const remove = (n: Note) => {
-    if (window.confirm(`Hapus catatan "${n.title}"?`)) {
-      onDelete(n.id);
+  const remove = async (n: NoteRow) => {
+    if (!window.confirm(`Hapus catatan "${n.title}"?`)) return;
+    try {
+      await onDelete(n.id);
       if (editId === n.id) reset();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menghapus catatan.');
     }
   };
 
@@ -60,40 +70,30 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
           </label>
           <label className="block text-sm font-extrabold">
             Isi catatan
-            <textarea className="field mt-1 min-h-36 font-normal" value={content} onChange={(e) => setContent(e.target.value)} />
+            <textarea className="field mt-1 min-h-36 font-normal leading-relaxed" value={content} onChange={(e) => setContent(e.target.value)} />
           </label>
-          {error && <p className="text-sm font-bold text-rust">{error}</p>}
+          {error && <p className="break-words text-sm font-bold text-rust">{error}</p>}
           <div className="flex gap-2">
-            <button type="submit" className="btn flex-1 bg-army text-cream">
+            <button type="submit" disabled={busy} className="btn flex-1 bg-army text-cream">
               <Save size={18} /> {editId ? 'SIMPAN PERUBAHAN' : 'SIMPAN CATATAN'}
             </button>
             {editId && (
-              <button type="button" onClick={reset} className="btn bg-panel2">
+              <button type="button" onClick={reset} className="btn">
                 <X size={18} /> BATAL
               </button>
             )}
           </div>
         </form>
-        <h3 className="mt-5 text-lg">Laporan Tersimpan</h3>
-        <ul className="mt-1 divide-y-2 divide-line text-sm">
-          {reports.map((r) => (
-            <li key={r.id} className="py-1.5">
-              <p className="font-extrabold">{r.title}</p>
-              <p className="text-muted">{formatDate(r.date)} · {r.division}</p>
-              <p>{r.description}</p>
-            </li>
-          ))}
-          {reports.length === 0 && <li className="py-2 text-muted">Belum ada laporan. Kirim laporan dari halaman Home.</li>}
-        </ul>
       </section>
       <section className="space-y-3">
         <h2 className="text-2xl">Buku Catatan</h2>
+        {notes.length === 0 && <p className="card p-4 text-muted">Belum di isi</p>}
         {notes.map((n) => (
           <article key={n.id} className="card p-4">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <h3 className="text-lg leading-tight">{n.title}</h3>
-                <p className="text-xs font-bold text-muted">{formatDate(n.date)}</p>
+                <h3 className="break-words text-lg leading-snug">{n.title}</h3>
+                <p className="text-xs font-semibold text-muted">{formatStamp(n.createdAt)}</p>
               </div>
               <div className="flex shrink-0 gap-1">
                 <button className="btn px-2 py-1" onClick={() => edit(n)} aria-label={`Edit ${n.title}`}>
@@ -104,10 +104,9 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
                 </button>
               </div>
             </div>
-            <p className="mt-2 whitespace-pre-wrap text-sm">{n.content}</p>
+            <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed">{n.content}</p>
           </article>
         ))}
-        {notes.length === 0 && <p className="card p-4 text-muted">Belum ada catatan. Tulis catatan pertama di formulir.</p>}
       </section>
     </div>
   );

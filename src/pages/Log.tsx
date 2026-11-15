@@ -1,36 +1,36 @@
 import { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
-import type { Attendance, Report } from '../types';
-import { STATUS_STYLE, formatDate } from '../lib';
+import { Image as ImageIcon, Search } from 'lucide-react';
+import type { LogRow } from '../types';
+import { formatStamp, localDate } from '../lib';
+import { photoUrl } from '../data';
 
-interface Props {
-  attendance: Attendance[];
-  reports: Report[];
-}
-
-export default function Log({ attendance, reports }: Props) {
+export default function Log({ log }: { log: LogRow[] }) {
   const [q, setQ] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [photoError, setPhotoError] = useState('');
 
   const rows = useMemo(() => {
-    const dates = Array.from(new Set([...attendance.map((a) => a.date), ...reports.map((r) => r.date)])).sort().reverse();
-    return dates
-      .map((date) => {
-        const att = attendance.find((a) => a.date === date);
-        const rs = reports.filter((r) => r.date === date);
-        const points = (att ? att.points : 0) + rs.reduce((s, r) => s + r.points, 0);
-        return { date, att, rs, points };
-      })
-      .filter((r) => {
-        if (from && r.date < from) return false;
-        if (to && r.date > to) return false;
-        const text = `${r.att ? r.att.status : ''} ${r.rs.map((x) => x.title).join(' ')}`.toLowerCase();
-        return text.includes(q.trim().toLowerCase());
-      });
-  }, [attendance, reports, q, from, to]);
+    const needle = q.trim().toLowerCase();
+    return log.filter((r) => {
+      const d = localDate(r.createdAt);
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+      return `${r.action} ${r.detail}`.toLowerCase().includes(needle);
+    });
+  }, [log, q, from, to]);
 
-  const total = rows.reduce((s, r) => s + r.points, 0);
+  const openPhoto = async (path: string) => {
+    setPhotoError('');
+    const w = window.open('', '_blank');
+    try {
+      const url = await photoUrl(path);
+      if (w) w.location.href = url;
+    } catch (e) {
+      if (w) w.close();
+      setPhotoError(e instanceof Error ? e.message : 'Foto gagal dibuka.');
+    }
+  };
 
   return (
     <section className="card p-4">
@@ -40,7 +40,7 @@ export default function Log({ attendance, reports }: Props) {
           Cari
           <div className="relative mt-1">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-            <input className="field pl-9 text-base font-normal" placeholder="Status atau judul laporan" value={q} onChange={(e) => setQ(e.target.value)} />
+            <input className="field pl-9 text-base font-normal" placeholder="Aktivitas atau detail" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
         </label>
         <label className="block text-xs font-semibold text-muted">
@@ -52,38 +52,26 @@ export default function Log({ attendance, reports }: Props) {
           <input type="date" className="field mt-1 text-base font-normal" value={to} onChange={(e) => setTo(e.target.value)} />
         </label>
       </div>
-      <p className="mt-2 text-sm font-bold">{rows.length} hari ditampilkan · Total poin {total}</p>
-      <div className="mt-2 overflow-x-auto rounded-xl border border-line">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-army font-display text-cream">
-            <tr>
-              <th className="p-2">Tanggal</th>
-              <th className="p-2">Status</th>
-              <th className="p-2">Jam</th>
-              <th className="p-2">Laporan kegiatan</th>
-              <th className="p-2 text-right">Poin</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y-2 divide-line">
-            {rows.map((r) => (
-              <tr key={r.date}>
-                <td className="p-2 font-semibold">{formatDate(r.date)}</td>
-                <td className="p-2">
-                  {r.att ? <span className={`rounded-lg px-2 py-0.5 font-display ${STATUS_STYLE[r.att.status]}`}>{r.att.status}</span> : '-'}
-                </td>
-                <td className="p-2">{r.att ? r.att.time : '-'}</td>
-                <td className="p-2">{r.rs.length ? r.rs.map((x) => x.title).join(', ') : '-'}</td>
-                <td className={`p-2 text-right font-extrabold ${r.points < 0 ? 'text-rust' : 'text-leaf'}`}>{r.points > 0 ? `+${r.points}` : r.points}</td>
-              </tr>
-            ))}
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={5} className="p-4 text-center text-muted">Tidak ada data yang cocok. Ubah kata kunci atau rentang tanggal.</td>
-              </tr>
+      {photoError && <p className="mt-2 break-words text-sm font-bold text-rust">{photoError}</p>}
+      <ul className="mt-3 divide-y divide-line">
+        {rows.map((r) => (
+          <li key={r.id} className="py-3">
+            <p className="text-xs font-semibold text-muted">{formatStamp(r.createdAt)}</p>
+            <p className="mt-0.5 break-words font-semibold leading-snug">
+              {r.memberName} {r.action}.
+            </p>
+            {r.detail && <p className="break-words text-sm text-muted">{r.detail}</p>}
+            {r.photoPath && (
+              <button onClick={() => openPhoto(r.photoPath as string)} className="btn mt-2 px-3 py-1.5 text-sm">
+                <ImageIcon size={16} /> Lihat foto
+              </button>
             )}
-          </tbody>
-        </table>
-      </div>
+          </li>
+        ))}
+      </ul>
+      {rows.length === 0 && (
+        <p className="mt-3 text-muted">{log.length === 0 ? 'Belum ada aktivitas.' : 'Tidak ada aktivitas yang cocok dengan filter.'}</p>
+      )}
     </section>
   );
 }

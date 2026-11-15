@@ -1,39 +1,41 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { LogIn, LogOut, RotateCcw, Save } from 'lucide-react';
-import type { Personnel } from '../types';
+import { LogOut, Save } from 'lucide-react';
+import type { Profile as ProfileData } from '../types';
 import { DIVISIONS } from '../lib';
 import Avatar from '../components/Avatar';
 import { useAuth } from '../auth';
 
 interface Props {
-  personnel: Personnel;
+  personnel: ProfileData;
   rank: string;
   points: number;
   attendanceCount: number;
   reportCount: number;
-  onSave: (p: Personnel) => void;
-  onReset: () => void;
+  onSave: (p: ProfileData) => Promise<void>;
 }
 
-export default function Profile({ personnel, rank, points, attendanceCount, reportCount, onSave, onReset }: Props) {
-  const { enabled, loading, user, signIn, signOut } = useAuth();
-  const [form, setForm] = useState<Personnel>(personnel);
+export default function Profile({ personnel, rank, points, attendanceCount, reportCount, onSave }: Props) {
+  const { signOut } = useAuth();
+  const [form, setForm] = useState<ProfileData>(personnel);
   const [error, setError] = useState('');
-  const [authError, setAuthError] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.serviceId.trim()) {
-      setError('Nama dan ID personel wajib diisi.');
+    if (!form.name.trim()) {
+      setError('Nama wajib diisi.');
       return;
     }
-    onSave({ ...form, name: form.name.trim(), serviceId: form.serviceId.trim() });
+    setBusy(true);
     setError('');
-  };
-
-  const reset = () => {
-    if (window.confirm('Kembalikan semua data ke data contoh? Data yang kamu simpan akan hilang.')) onReset();
+    try {
+      await onSave({ name: form.name.trim(), division: form.division, serviceId: form.serviceId.trim() });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menyimpan profil.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const stats = [
@@ -46,9 +48,12 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
     <div className="grid gap-4 lg:grid-cols-2">
       <section className="card flex flex-col items-center p-6 text-center">
         <Avatar size={110} />
-        <h2 className="mt-2 text-2xl">{personnel.name}</h2>
+        <h2 className="mt-2 break-words text-2xl">{personnel.name}</h2>
         <p className="font-display text-lg text-muted">{rank}</p>
-        <p className="text-sm font-semibold">Divisi {personnel.division} · {personnel.serviceId}</p>
+        <p className="break-words text-sm font-semibold">
+          {personnel.division ? `Divisi ${personnel.division}` : 'Divisi belum diatur'}
+          {personnel.serviceId ? ` · ${personnel.serviceId}` : ''}
+        </p>
         <div className="mt-4 grid w-full grid-cols-3 gap-2">
           {stats.map((s) => (
             <div key={s.label} className="rounded-xl border border-line bg-panel2 p-2">
@@ -57,27 +62,9 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
             </div>
           ))}
         </div>
-        <div className="mt-4 w-full rounded-2xl border border-line bg-panel2 p-3 text-sm">
-          {!enabled && <p className="text-muted">Login Discord belum aktif. Isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY (lihat README).</p>}
-          {enabled && user && (
-            <div className="flex items-center justify-between gap-2">
-              <p className="min-w-0 truncate font-bold">Masuk sebagai {user.name}</p>
-              <button onClick={signOut} className="btn px-3 py-1.5">
-                <LogOut size={16} /> Keluar
-              </button>
-            </div>
-          )}
-          {enabled && !user && (
-            <button
-              onClick={async () => setAuthError((await signIn()) ?? '')}
-              disabled={loading}
-              className="btn w-full bg-army text-cream"
-            >
-              <LogIn size={18} /> LOGIN DENGAN DISCORD
-            </button>
-          )}
-          {authError && <p className="mt-2 text-sm font-bold text-rust">Login gagal: {authError}</p>}
-        </div>
+        <button onClick={() => void signOut()} className="btn mt-4 w-full">
+          <LogOut size={18} /> KELUAR
+        </button>
       </section>
       <section className="card p-4">
         <h2 className="text-2xl">Informasi Akun</h2>
@@ -89,6 +76,7 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
           <label className="block text-sm font-extrabold">
             Divisi
             <select className="field mt-1 font-normal" value={form.division} onChange={(e) => setForm({ ...form, division: e.target.value })}>
+              <option value="">Belum diatur</option>
               {DIVISIONS.map((d) => (
                 <option key={d}>{d}</option>
               ))}
@@ -98,14 +86,11 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
             ID Personel
             <input className="field mt-1 font-normal" value={form.serviceId} onChange={(e) => setForm({ ...form, serviceId: e.target.value })} />
           </label>
-          {error && <p className="text-sm font-bold text-rust">{error}</p>}
-          <button type="submit" className="btn w-full bg-army text-cream">
-            <Save size={18} /> SIMPAN PROFIL
+          {error && <p className="break-words text-sm font-bold text-rust">{error}</p>}
+          <button type="submit" disabled={busy} className="btn w-full bg-army text-cream">
+            <Save size={18} /> {busy ? 'MENYIMPAN...' : 'SIMPAN PROFIL'}
           </button>
         </form>
-        <button onClick={reset} className="btn mt-4 w-full bg-panel2">
-          <RotateCcw size={18} /> RESET KE DATA CONTOH
-        </button>
       </section>
     </div>
   );
