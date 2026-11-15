@@ -12,17 +12,19 @@ export default function MenuCard({ title, Icon, primary = false, onClick }: Prop
   return (
     <button
       onClick={onClick}
-      className={`card flex items-center gap-3 p-4 text-left transition active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf ${
+      className={`card flex flex-col gap-3 p-4 text-left transition active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf ${
         primary ? 'border-leaf/30 bg-leafbg' : ''
       }`}
     >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-night/60 text-leaf">
-        <Icon size={22} />
-      </span>
-      <span className="min-w-0 flex-1 break-words font-display text-lg">{title}</span>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-panel2 text-fg">
-        <ArrowRight size={16} />
-      </span>
+      <div className="flex items-center justify-between">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-night/60 text-leaf">
+          <Icon size={22} aria-hidden="true" />
+        </span>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-panel2 text-fg">
+          <ArrowRight size={16} aria-hidden="true" />
+        </span>
+      </div>
+      <span className="font-display text-lg leading-tight">{title}</span>
     </button>
   );
 }
