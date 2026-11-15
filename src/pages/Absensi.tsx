@@ -30,7 +30,7 @@ export default function Absensi({ personnel, rank, onBack, onSubmitted, onTabSwi
     setTab(t);
   };
   const tabBtn =
-    'relative z-10 flex items-center justify-center gap-2 rounded-xl py-2 font-display text-base transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf';
+    'relative z-10 flex items-center justify-center gap-2 rounded-xl py-3 font-display text-base transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf';
 
   const info = [
     { label: 'Personel', value: personnel.name },
@@ -67,10 +67,10 @@ export default function Absensi({ personnel, rank, onBack, onSubmitted, onTabSwi
 
         <div className="-mx-1 -my-1 grid overflow-hidden px-1 py-1">
           <div role="tabpanel" aria-hidden={tab !== 'duty'} className={`${PANEL} ${tab === 'duty' ? ACTIVE : hidden('left')}`}>
-            <DutyForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Laporan duty terkirim')} />
+            <DutyForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Laporan duty valid. Pengiriman ke server belum tersedia')} />
           </div>
           <div role="tabpanel" aria-hidden={tab !== 'izin'} className={`${PANEL} ${tab === 'izin' ? ACTIVE : hidden('right')}`}>
-            <LeaveForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Pengajuan izin terkirim')} />
+            <LeaveForm personnel={personnel} rank={rank} onSubmitted={() => onSubmitted('Pengajuan izin valid. Pengiriman ke server belum tersedia')} />
           </div>
         </div>
       </section>

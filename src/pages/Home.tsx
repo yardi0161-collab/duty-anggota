@@ -30,6 +30,7 @@ export default function Home({ personnel, rank, points, attendance, reports, onN
         <MenuCard title="Absensi" Icon={ClipboardCheck} primary onClick={() => onNavigate('absensi')} />
         <MenuCard title="Laporan" Icon={FileText} onClick={() => onNavigate('laporan')} />
       </div>
+      <p className="text-center text-xs text-muted">Nama, angka, dan riwayat di halaman ini masih data contoh.</p>
     </div>
   );
 }

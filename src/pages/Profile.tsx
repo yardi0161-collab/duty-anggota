@@ -20,6 +20,7 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
   const { enabled, loading, user, signIn, signOut } = useAuth();
   const [form, setForm] = useState<Personnel>(personnel);
   const [error, setError] = useState('');
+  const [authError, setAuthError] = useState('');
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -67,10 +68,15 @@ export default function Profile({ personnel, rank, points, attendanceCount, repo
             </div>
           )}
           {enabled && !user && (
-            <button onClick={signIn} disabled={loading} className="btn w-full bg-army text-cream">
+            <button
+              onClick={async () => setAuthError((await signIn()) ?? '')}
+              disabled={loading}
+              className="btn w-full bg-army text-cream"
+            >
               <LogIn size={18} /> LOGIN DENGAN DISCORD
             </button>
           )}
+          {authError && <p className="mt-2 text-sm font-bold text-rust">Login gagal: {authError}</p>}
         </div>
       </section>
       <section className="card p-4">

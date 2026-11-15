@@ -36,12 +36,21 @@ export default function Log({ attendance, reports }: Props) {
     <section className="card p-4">
       <h2 className="text-2xl">Log Aktivitas</h2>
       <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto_auto]">
-        <div className="relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-          <input className="field pl-9" placeholder="Cari status atau laporan" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Cari" />
-        </div>
-        <input type="date" className="field" value={from} onChange={(e) => setFrom(e.target.value)} aria-label="Dari tanggal" />
-        <input type="date" className="field" value={to} onChange={(e) => setTo(e.target.value)} aria-label="Sampai tanggal" />
+        <label className="block text-xs font-semibold text-muted">
+          Cari
+          <div className="relative mt-1">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input className="field pl-9 text-base font-normal" placeholder="Status atau judul laporan" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+        </label>
+        <label className="block text-xs font-semibold text-muted">
+          Dari tanggal
+          <input type="date" className="field mt-1 text-base font-normal" value={from} onChange={(e) => setFrom(e.target.value)} />
+        </label>
+        <label className="block text-xs font-semibold text-muted">
+          Sampai tanggal
+          <input type="date" className="field mt-1 text-base font-normal" value={to} onChange={(e) => setTo(e.target.value)} />
+        </label>
       </div>
       <p className="mt-2 text-sm font-bold">{rows.length} hari ditampilkan · Total poin {total}</p>
       <div className="mt-2 overflow-x-auto rounded-xl border border-line">

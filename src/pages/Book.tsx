@@ -54,8 +54,14 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
       <section className="card h-fit p-4">
         <h2 className="text-2xl">{editId ? 'Edit Catatan' : 'Catatan Baru'}</h2>
         <form onSubmit={submit} className="mt-2 space-y-2">
-          <input className="field" placeholder="Judul catatan" value={title} onChange={(e) => setTitle(e.target.value)} aria-label="Judul catatan" />
-          <textarea className="field min-h-36" placeholder="Isi catatan kegiatan atau personel" value={content} onChange={(e) => setContent(e.target.value)} aria-label="Isi catatan" />
+          <label className="block text-sm font-extrabold">
+            Judul catatan
+            <input className="field mt-1 font-normal" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </label>
+          <label className="block text-sm font-extrabold">
+            Isi catatan
+            <textarea className="field mt-1 min-h-36 font-normal" value={content} onChange={(e) => setContent(e.target.value)} />
+          </label>
           {error && <p className="text-sm font-bold text-rust">{error}</p>}
           <div className="flex gap-2">
             <button type="submit" className="btn flex-1 bg-army text-cream">
@@ -90,7 +96,7 @@ export default function Book({ notes, reports, onSave, onDelete }: Props) {
                 <p className="text-xs font-bold text-muted">{formatDate(n.date)}</p>
               </div>
               <div className="flex shrink-0 gap-1">
-                <button className="btn bg-gold px-2 py-1 text-ink" onClick={() => edit(n)} aria-label={`Edit ${n.title}`}>
+                <button className="btn px-2 py-1" onClick={() => edit(n)} aria-label={`Edit ${n.title}`}>
                   <Pencil size={16} />
                 </button>
                 <button className="btn bg-rust px-2 py-1 text-white" onClick={() => remove(n)} aria-label={`Hapus ${n.title}`}>
