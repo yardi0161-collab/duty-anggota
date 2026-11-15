@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user: toUser(session),
       signIn: async () => {
         if (!supabase) return 'Login belum dikonfigurasi.';
-        const { error } = await supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.origin } });
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: 'https://duty-anggota-5257.vercel.app/' } });
         return error ? error.message : null;
       },
       signOut: async () => {
