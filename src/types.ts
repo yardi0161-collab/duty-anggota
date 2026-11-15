@@ -1,37 +1,57 @@
-export type Status = 'HADIR' | 'IZIN' | 'SAKIT' | 'ALPA';
-export type Page = 'home' | 'log' | 'book' | 'profile' | 'absensi' | 'laporan' | 'bar';
+export type Page = 'home' | 'log' | 'book' | 'profile' | 'absensi' | 'laporan';
+export type Kind = 'duty' | 'izin';
 
-export interface Personnel {
+export interface Profile {
   name: string;
   division: string;
   serviceId: string;
 }
-export interface Attendance {
+export interface AttendanceRow {
   id: string;
   date: string;
-  time: string;
-  status: Status;
-  points: number;
+  kind: Kind;
+  startTime: string | null;
+  endTime: string | null;
+  content: string;
+  photoPath: string | null;
 }
-export interface Report {
+export interface ReportRow {
   id: string;
+  category: string;
   title: string;
   description: string;
-  division: string;
   date: string;
-  points: number;
-  hours?: number;
+  createdAt: string;
 }
-export interface Note {
+export interface NoteRow {
   id: string;
   title: string;
   content: string;
+  createdAt: string;
+}
+export interface LogRow {
+  id: string;
+  memberName: string;
+  action: string;
+  detail: string;
+  photoPath: string | null;
+  createdAt: string;
+}
+export interface DutyInput {
   date: string;
+  start: string;
+  end: string;
+  content: string;
+  photo: File | null;
+}
+export interface IzinInput {
+  date: string;
+  reason: string;
 }
 export interface ReportInput {
+  category: string;
   title: string;
   description: string;
-  division: string;
   date: string;
 }
 export interface NoteInput {

@@ -1,13 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import type { Session, SupabaseClient } from '@supabase/supabase-js';
-
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-const supabase: SupabaseClient | null = url && key ? createClient(url, key) : null;
+import type { Session } from '@supabase/supabase-js';
+import { supabase } from './supabase';
 
 export interface AuthUser {
+  id: string;
   name: string;
   avatarUrl: string | null;
 }
@@ -33,7 +30,8 @@ function toUser(s: Session | null): AuthUser | null {
   const m = s.user.user_metadata as Record<string, unknown>;
   const pick = (k: string): string | null => (typeof m[k] === 'string' ? (m[k] as string) : null);
   return {
-    name: pick('full_name') ?? pick('name') ?? pick('user_name') ?? 'Pengguna',
+    id: s.user.id,
+    name: pick('full_name') ?? pick('name') ?? pick('user_name') ?? 'Anggota',
     avatarUrl: pick('avatar_url') ?? pick('picture'),
   };
 }
