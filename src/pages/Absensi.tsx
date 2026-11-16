@@ -14,7 +14,7 @@ interface Props {
   onBack: () => void;
   onDuty: (i: DutyInput) => Promise<void>;
   onCuti: (i: CutiInput) => Promise<void>;
-  onTabSwitch: () => void;
+  onTabSwitch: (t: Tab) => void;
 }
 
 // Kedua form ditumpuk dalam satu sel grid agar tinggi kotak stabil. Yang tidak aktif memudar ke sisinya.
@@ -27,7 +27,7 @@ export default function Absensi({ personnel, rank, verified, onBack, onDuty, onC
   const [tab, setTab] = useState<Tab>('duty');
   const pick = (t: Tab) => {
     if (t === tab) return;
-    onTabSwitch();
+    onTabSwitch(t);
     setTab(t);
   };
   const tile = (active: boolean) =>

@@ -2,9 +2,13 @@ import { useMemo, useState } from 'react';
 import { Image as ImageIcon, Search } from 'lucide-react';
 import type { LogRow } from '../types';
 import { formatStamp, localDate } from '../lib';
-import { photoUrl } from '../data';
 
-export default function Log({ log }: { log: LogRow[] }) {
+interface Props {
+  log: LogRow[];
+  onPhoto: (path: string) => Promise<void>;
+}
+
+export default function Log({ log, onPhoto }: Props) {
   const [q, setQ] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -22,12 +26,9 @@ export default function Log({ log }: { log: LogRow[] }) {
 
   const openPhoto = async (path: string) => {
     setPhotoError('');
-    const w = window.open('', '_blank');
     try {
-      const url = await photoUrl(path);
-      if (w) w.location.href = url;
+      await onPhoto(path);
     } catch (e) {
-      if (w) w.close();
       setPhotoError(e instanceof Error ? e.message : 'Foto gagal dibuka.');
     }
   };
