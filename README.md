@@ -27,11 +27,14 @@ Anggota tanpa role yang ada di `rank_roles` tampil "Belum bergabung/mendapatkan 
 
 ## 3. Jalankan
 ```bash
-cp .env.example .env.local   # isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY
+cp .env.example .env.local   # isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY (dan VITE_DISCORD_DM untuk tombol bantuan login)
 npm install
 npm run dev
 ```
 Cek TypeScript dan build: `npm run build`. Deploy: upload ke GitHub, import di Vercel, isi dua Environment Variables yang sama.
+
+## Tombol "Kendala Login?"
+Isi `VITE_DISCORD_DM` dengan Discord User ID admin (Discord Developer Mode aktif, tekan lama profil, Salin ID Pengguna). Tombol membuka `https://discord.com/users/<ID>`, yaitu profil admin, dan pengguna menekan Message. Kalau variabel kosong, tombol tidak ditampilkan.
 
 ## Cara kerja data
 - Semua data terikat ke id akun dan dibatasi RLS. Anggota lain tidak bisa melihat atau mengubahnya.
